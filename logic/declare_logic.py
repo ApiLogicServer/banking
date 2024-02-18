@@ -17,7 +17,7 @@ import socket
 
 app_logger = logging.getLogger(__name__)
 
-declare_logic_message = "ALERT:  *** No Rules Yet ***"  # printed in api_logic_server.py
+declare_logic_message = "*** Banking Rules Loaded ***"  # printed in api_logic_server.py
 db = safrs.DB 
 session = db.session 
 producer = None
