@@ -13,9 +13,20 @@ Changes
   Renamed Transaction -> TransactionLog (reserved word, evidently)
 
 Issues
-  Transfer attempt: row created with null id to TransactionLog; then blows up in Admin
-  curl fails with: Instance '<Transfer at 0x1095283d0>' has been deleted, or its row is otherwise not present.
-  Transfer created (with null id!!), but not TransactionLog
+  Running, though see database creation notes above
+
+Simpifications to consider
+  Defaulting: lots of code here, obscuring key logic
+    And, lots of warnings: "default ignored for ..."
+      This is eager defaulting, in logic_row.insert()
+      It means server_default provided, but unk data type (date[time], and NULL)
+    Note
+      On recent release, we are tolerate of null sums and counts
+      Support for date stamping for known attr names using generic events
+    So, we can 
+      Use naming convention for account, transaction, tranfer
+      Leaving transaction deposit and withdrawal
+        Which we could just set in transfer_funds
 
 
 Test
