@@ -1,8 +1,8 @@
 Creation
     extract banking.sql
     sqlite3 banking.db < banking.sql
-      WARNING - this fails to create autonum cols
-      I had to laod the sql into a db tool (dbviz) to get the database (GEESH)
+      WARNING - this fails to create autonum cols (sqlite 3.43.2)
+      I had to laod the sql into a db tool (dbviz) to get the database (sqlite 3.40.0) (GEESH)
     ApiLogicServer create --project_name=banking --db_url=sqlite:///banking.db
 
 Changes 

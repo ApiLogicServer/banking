@@ -1,3 +1,6 @@
+--    sqlite3 banking.db < banking.sql
+--      WARNING - this fails to create autonum cols (sqlite 3.43.2)
+--      I had to laod the sql into a db tool (dbvis) to get the database (sqlite 3.40.0)
 
 
 DROP TABLE IF EXISTS AccountType;
