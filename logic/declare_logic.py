@@ -166,6 +166,8 @@ def declare_logic():
         
         logic_row.log("Funds transferred successfully!")
 
+    # defaulting.  
+    # Consider generic approaches, eg https://variable-scope.com/posts/setting-eager-defaults-for-sqlalchemy-orm-models
     Rule.early_row_event(on_class=models.Customer, calling=fn_default_customer)
     Rule.early_row_event(on_class=models.Account, calling=fn_default_account)
     Rule.early_row_event(on_class=models.TransactionLog, calling=fn_default_transaction_log)
