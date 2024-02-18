@@ -1,6 +1,8 @@
 Creation
     extract banking.sql
     sqlite3 banking.db < banking.sql
+      WARNING - this fails to create autonum cols
+      I had to laod the sql into a db tool (dbviz) to get the database (GEESH)
     ApiLogicServer create --project_name=banking --db_url=sqlite:///banking.db
 
 Changes 
@@ -12,6 +14,8 @@ Changes
 
 Issues
   Transfer attempt: row created with null id to TransactionLog; then blows up in Admin
+  curl fails with: Instance '<Transfer at 0x1095283d0>' has been deleted, or its row is otherwise not present.
+  Transfer created (with null id!!), but not TransactionLog
 
 
 Test

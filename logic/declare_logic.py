@@ -31,41 +31,6 @@ def declare_logic():
     Use code completion (Rule.) to declare rules here:
     '''
     
-    def handle_all(logic_row: LogicRow):  # OPTIMISTIC LOCKING, [TIME / DATE STAMPING]
-        """
-        This is generic - executed for all classes.
-
-        Invokes optimistic locking.
-
-        You can optionally do time and date stamping here, as shown below.
-
-        Args:
-            logic_row (LogicRow): from LogicBank - old/new row, state
-        """
-        global producer,conf
-        if Args.instance.kafka_producer:
-            conf = Args.instance.kafka_producer
-            if "client.id" not in conf:
-                conf["client.id"] = socket.gethostname()
-            # conf = {'bootstrap.servers': 'localhost:9092', 'client.id': socket.gethostname()}
-            producer = Producer(conf)
-            app_logger.debug(f'\nKafka producer connected')
-        
-        #This will enable declarative role based access 
-        Grant.process_updates(logic_row=logic_row)
-        
-        if logic_row.is_updated() and logic_row.old_row is not None and logic_row.nest_level == 0:
-            opt_locking.opt_lock_patch(logic_row=logic_row)
-        
-        enable_creation_stamping = True  # OpenDate time stamping
-        if enable_creation_stamping:
-            row = logic_row.row
-            if logic_row.ins_upd_dlt == "ins" and hasattr(row, "OpenDate"):
-                row.OpenDate = datetime.datetime.now()
-                logic_row.log("early_row_event_all_classes - handle_all sets 'OpenDate"'')
-        
-    Rule.early_row_event_all_classes(early_row_event_all_classes=handle_all)
-    
     Rule.sum(derive=models.Account.AcctBalance, 
                 as_sum_of=models.TransactionLog.TotalAmount)
     
@@ -108,7 +73,7 @@ def declare_logic():
             if row.OpenDate is None:
                 row.OpenDate = date.today()
         
-    def fn_default_transaction(row=models.TransactionLog, old_row=models.TransactionLog, logic_row=LogicRow):
+    def fn_default_transaction_log(row=models.TransactionLog, old_row=models.TransactionLog, logic_row=LogicRow):
         if logic_row.ins_upd_dlt == "ins":
             if row.TotalAmount is None:
                 row.TotalAmount = 0
@@ -124,6 +89,19 @@ def declare_logic():
                 row.TransactionDate = date.today()
     
     def fn_transfer_funds(row=models.Transfer, old_row=models.Transfer, logic_row=LogicRow):
+        """
+        Creates 2 TransactionLog rows (from/to account)
+
+        Args:
+            row (_type_, optional): _description_. Defaults to models.Transfer.
+            old_row (_type_, optional): _description_. Defaults to models.Transfer.
+            logic_row (_type_, optional): _description_. Defaults to LogicRow.
+
+        Raises:
+            requests.RequestException: _description_
+            requests.RequestException: _description_
+            requests.RequestException: _description_
+        """
         if logic_row.ins_upd_dlt != "ins":
             return
         fromAcctId = row.FromAccountID
@@ -161,7 +139,7 @@ def declare_logic():
         from_trans.TransactionType = "Transfer From"
         from_trans.TransactionDate = date.today()
         #session.add(from_trans)
-        logic_row.insert(reason="Transfer From",row=from_trans)
+        logic_row.insert(reason="Transfer From", row=from_trans)
         
         to_trans = models.TransactionLog()
         to_trans.TransactionID = len(transactions) + 3
@@ -190,10 +168,48 @@ def declare_logic():
 
     Rule.early_row_event(on_class=models.Customer, calling=fn_default_customer)
     Rule.early_row_event(on_class=models.Account, calling=fn_default_account)
-    Rule.early_row_event(on_class=models.TransactionLog, calling=fn_default_transaction)
+    Rule.early_row_event(on_class=models.TransactionLog, calling=fn_default_transaction_log)
     Rule.early_row_event(on_class=models.Transfer, calling=fn_default_transfer)
 
     Rule.commit_row_event(on_class=models.Transfer, calling=fn_transfer_funds)
+
+    
+
+    def handle_all(logic_row: LogicRow):  # OPTIMISTIC LOCKING, [TIME / DATE STAMPING]
+        """
+        This is generic - executed for all classes.
+
+        Invokes optimistic locking.
+
+        You can optionally do time and date stamping here, as shown below.
+
+        Args:
+            logic_row (LogicRow): from LogicBank - old/new row, state
+        """
+        global producer,conf
+        if Args.instance.kafka_producer:
+            conf = Args.instance.kafka_producer
+            if "client.id" not in conf:
+                conf["client.id"] = socket.gethostname()
+            # conf = {'bootstrap.servers': 'localhost:9092', 'client.id': socket.gethostname()}
+            producer = Producer(conf)
+            app_logger.debug(f'\nKafka producer connected')
+        
+        #This will enable declarative role based access 
+        Grant.process_updates(logic_row=logic_row)
+        
+        if logic_row.is_updated() and logic_row.old_row is not None and logic_row.nest_level == 0:
+            opt_locking.opt_lock_patch(logic_row=logic_row)
+        
+        enable_creation_stamping = True  # OpenDate time stamping
+        if enable_creation_stamping:
+            row = logic_row.row
+            if logic_row.ins_upd_dlt == "ins" and hasattr(row, "OpenDate"):
+                row.OpenDate = datetime.datetime.now()
+                logic_row.log("early_row_event_all_classes - handle_all sets 'OpenDate"'')
+        
+    Rule.early_row_event_all_classes(early_row_event_all_classes=handle_all)
+
 
     declare_logic_message = "..logic/declare_logic.py (logic == rules + code)"
     app_logger.debug("..logic/declare_logic.py (logic == rules + code)")

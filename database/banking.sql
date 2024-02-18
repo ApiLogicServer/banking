@@ -11,7 +11,7 @@ INSERT INTO AccountType VALUES ('Checking'),('Loan'),('Savings');
 
 DROP TABLE IF EXISTS Branch;
 CREATE TABLE Branch (
-  BranchID int AUTO_INCREMENT  PRIMARY KEY,
+  BranchID INTEGER PRIMARY KEY,
   Name varchar(100) DEFAULT NULL,
   Office varchar(15) DEFAULT NULL,
   Address varchar(100) DEFAULT NULL,
@@ -23,7 +23,7 @@ INSERT INTO Branch VALUES (14,'Main','MainOffice','1 Main','2024-02-17 11:35:12'
 
 DROP TABLE IF EXISTS Customer;
 CREATE TABLE Customer (
-  CustomerID int AUTO_INCREMENT PRIMARY KEY,
+  CustomerID INTEGER PRIMARY KEY,
   FirstName varchar(50) DEFAULT NULL,
   LastName varchar(50) DEFAULT NULL,
   Email varchar(100) DEFAULT NULL,
@@ -42,7 +42,7 @@ INSERT INTO Customer VALUES (1,'Main','Customer',NULL,NULL,NULL,NULL,'2024-02-17
 
 DROP TABLE IF EXISTS Account;
 CREATE TABLE Account (
-  AccountID int AUTO_INCREMENT PRIMARY KEY,
+  AccountID INTEGER PRIMARY KEY,
   CustomerID int DEFAULT NULL,
   AccountType varchar(25) DEFAULT NULL,
   AcctBalance decimal(15,2) DEFAULT NULL,
@@ -56,7 +56,7 @@ INSERT INTO `Account` VALUES (2,1,'Checking',200.00,'2024-02-17 12:51:47'),(4,1,
 
 DROP TABLE IF EXISTS Employees;
 CREATE TABLE Employees (
-  EmployeeID int AUTO_INCREMENT  PRIMARY KEY,
+  EmployeeID INTEGER  PRIMARY KEY,
   LastName varchar(15) NOT NULL,
   FirstName varchar(15) NOT NULL,
   Branch int DEFAULT '1',
@@ -71,7 +71,7 @@ INSERT INTO Employees VALUES (19,'Employee-Main','Joe',14,NULL,NULL,NULL),(20,'E
 
 DROP TABLE IF EXISTS TransactionLog;
 CREATE TABLE TransactionLog (
-  TransactionID int AUTO_INCREMENT  PRIMARY KEY,
+  TransactionID INTEGER  PRIMARY KEY,
   AccountID int DEFAULT NULL,
   TransactionType varchar(25) DEFAULT NULL,
   TotalAmount decimal(15,2) DEFAULT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE TransactionLog (
 
 DROP TABLE IF EXISTS Transfer;
 CREATE TABLE Transfer (
-  TransactionID int AUTO_INCREMENT  PRIMARY KEY,
+  TransactionID INTEGER  PRIMARY KEY,
   FromAccountID int DEFAULT NULL,
   ToAccountID int DEFAULT NULL,
   Amount decimal(15,2) DEFAULT NULL,
