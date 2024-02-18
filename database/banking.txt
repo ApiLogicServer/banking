@@ -1,0 +1,35 @@
+Creation
+    extract banking.sql
+    sqlite3 banking.db < banking.sql
+    ApiLogicServer create --project_name=banking --db_url=sqlite:///banking.db
+
+Changes 
+  Added reln AccountType -> Account
+
+  Populated: Branch, Customer, AccountType, Customer, Account, Employees (?)
+
+  Renamed Transaction -> TransactionLog (reserved word, evidently)
+
+Issues
+  Transfer attempt: row created with null id to TransactionLog; then blows up in Admin
+
+
+Test
+curl -X 'POST' \
+  'http://localhost:5656/api/Transfer/' \
+  -H 'accept: application/vnd.api+json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "data": {
+    "attributes": {
+
+      "FromAccountID": 2,
+      "ToAccountID": 4,
+      "Amount": 3,
+      "TransactionDate": "0001-01-01 00:00:00",
+      "_check_sum_": "",
+      "S_CheckSum": ""
+    },
+    "type": "Transfer"
+  }
+}'
