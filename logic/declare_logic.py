@@ -136,20 +136,20 @@ def declare_logic():
             pass
             
         from_trans = logic_row.new_logic_row(models.TransactionLog)
-        from_trans.TransactionID = len(transactions) + 2
-        from_trans.AccountID = fromAcctId
-        from_trans.Withdrawl = amount
-        from_trans.TransactionType = "Transfer From"
-        from_trans.TransactionDate = date.today()
+        from_trans.row.TransactionID = len(transactions) + 2
+        from_trans.row.AccountID = fromAcctId
+        from_trans.row.Withdrawl = amount
+        from_trans.row.TransactionType = "Transfer From"
+        from_trans.row.TransactionDate = date.today()
         #session.add(from_trans)
         from_trans.insert(reason="Transfer From")
         
         to_trans = logic_row.new_logic_row(models.TransactionLog)
-        to_trans.TransactionID = len(transactions) + 3
-        to_trans.AccountID = toAcctId
-        to_trans.Deposit = amount
-        to_trans.TransactionType = "Transfer To"
-        to_trans.TransactionDate = date.today()
+        to_trans.row.TransactionID = len(transactions) + 3
+        to_trans.row.AccountID = toAcctId
+        to_trans.row.Deposit = amount
+        to_trans.row.TransactionType = "Transfer To"
+        to_trans.row.TransactionDate = date.today()
         #session.add(to_trans)
         to_trans.insert(reason="Transfer To")
         
