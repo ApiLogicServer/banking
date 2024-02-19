@@ -136,11 +136,11 @@ def declare_logic():
             pass
             
         from_trans = logic_row.new_logic_row(models.TransactionLog)
-        from_trans.row.TransactionID = len(transactions) + 2
+        from_trans.row.TransactionID = len(transactions) + 2    # Val: yank?
         from_trans.row.AccountID = fromAcctId
         from_trans.row.Withdrawl = amount
         from_trans.row.TransactionType = "Transfer From"
-        from_trans.row.TransactionDate = date.today()
+        from_trans.row.TransactionDate = date.today()           # yank?
         #session.add(from_trans)
         from_trans.insert(reason="Transfer From")
         
@@ -153,7 +153,7 @@ def declare_logic():
         #session.add(to_trans)
         to_trans.insert(reason="Transfer To")
         
-        if producer:
+        if producer:  # Val: consider kafka_producer.send_kafka_message (see nw)
             try:
                 value = {
                     "transactionID": row.TransactionID,
