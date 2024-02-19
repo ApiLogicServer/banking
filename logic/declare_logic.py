@@ -62,7 +62,7 @@ def declare_logic():
     
     Rule.commit_row_event(on_class=models.Account,calling=fn_overdraft)
     
-    
+
     enchanced_logicbank_old_defaulting = False  # see database/banking.txt
 
     def fn_default_customer(row=models.Customer , old_row=models.Customer, logic_row=LogicRow):
@@ -135,23 +135,23 @@ def declare_logic():
             # #Not Enough Funds - if Loan exists move to cover Overdraft (transfer Loan to from_acct)
             pass
             
-        from_trans = models.TransactionLog()
+        from_trans = logic_row.new_logic_row(models.TransactionLog)
         from_trans.TransactionID = len(transactions) + 2
         from_trans.AccountID = fromAcctId
         from_trans.Withdrawl = amount
         from_trans.TransactionType = "Transfer From"
         from_trans.TransactionDate = date.today()
         #session.add(from_trans)
-        logic_row.insert(reason="Transfer From", row=from_trans)
+        from_trans.insert(reason="Transfer From")
         
-        to_trans = models.TransactionLog()
+        to_trans = logic_row.new_logic_row(models.TransactionLog)
         to_trans.TransactionID = len(transactions) + 3
         to_trans.AccountID = toAcctId
         to_trans.Deposit = amount
         to_trans.TransactionType = "Transfer To"
         to_trans.TransactionDate = date.today()
         #session.add(to_trans)
-        logic_row.insert(reason="Transfer To", row=to_trans)
+        to_trans.insert(reason="Transfer To")
         
         if producer:
             try:
