@@ -62,6 +62,9 @@ def declare_logic():
     
     Rule.commit_row_event(on_class=models.Account,calling=fn_overdraft)
     
+    
+    enchanced_logicbank_old_defaulting = False  # see database/banking.txt
+
     def fn_default_customer(row=models.Customer , old_row=models.Customer, logic_row=LogicRow):
         if logic_row.ins_upd_dlt == "ins" and row.RegistrationDate is None:
             row.RegistrationDate = date.today()
@@ -75,14 +78,14 @@ def declare_logic():
         
     def fn_default_transaction_log(row=models.TransactionLog, old_row=models.TransactionLog, logic_row=LogicRow):
         if logic_row.ins_upd_dlt == "ins":
-            if row.TotalAmount is None:
-                row.TotalAmount = 0
+            if enchanced_logicbank_old_defaulting and row.TotalAmount is None:
+                pass # row.TotalAmount = 0
             if row.Deposit is None:
                 row.Deposit = 0
             if row.Withdrawl is None:
                 row.Withdrawl = 0
-            if row.TransactionDate is None:
-                row.TransactionDate = date.today()
+            if enchanced_logicbank_old_defaulting and row.TransactionDate is None:
+                pass # row.TransactionDate = date.today()
 
     def fn_default_transfer(row=models.Transfer, old_row=models.Transfer, logic_row=LogicRow):
         if logic_row.ins_upd_dlt == "ins" and row.TransactionDate is None:
@@ -167,16 +170,15 @@ def declare_logic():
         logic_row.log("Funds transferred successfully!")
 
     # defaulting.  
-    # Consider generic approaches, eg https://variable-scope.com/posts/setting-eager-defaults-for-sqlalchemy-orm-models
-    Rule.early_row_event(on_class=models.Customer, calling=fn_default_customer)
-    Rule.early_row_event(on_class=models.Account, calling=fn_default_account)
+    if enchanced_logicbank_old_defaulting:
+        Rule.early_row_event(on_class=models.Customer, calling=fn_default_customer)
+        Rule.early_row_event(on_class=models.Account, calling=fn_default_account)
+        Rule.early_row_event(on_class=models.Transfer, calling=fn_default_transfer)
     Rule.early_row_event(on_class=models.TransactionLog, calling=fn_default_transaction_log)
-    Rule.early_row_event(on_class=models.Transfer, calling=fn_default_transfer)
 
     Rule.commit_row_event(on_class=models.Transfer, calling=fn_transfer_funds)
 
     
-
     def handle_all(logic_row: LogicRow):  # OPTIMISTIC LOCKING, [TIME / DATE STAMPING]
         """
         This is generic - executed for all classes.

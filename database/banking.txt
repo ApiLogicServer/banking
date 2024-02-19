@@ -22,10 +22,13 @@ Simpifications to consider
     And, lots of warnings: "default ignored for ..."
       This is eager defaulting, in logic_row.insert()
       It means server_default provided, but unk data type (date[time], and NULL)
-    Addressed with update to eager defaulting in LogicBank
+    Addressed with update to eager defaulting in LogicBank  ** WORKS **
       Handles CURRENT_TIMESTAMP for date, datetime
       Ignores the infinitely curious 'default null'
       log entry showing attrs skipped due to unhandled type, or excp
+      To Test 
+        enchanced_logicbank_old_defaulting = False
+        get LogicBank revision
 
 
 
