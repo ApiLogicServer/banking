@@ -12,6 +12,8 @@ import safrs
 import json
 import requests
 from confluent_kafka import Producer, KafkaException
+import integration.kafka.kafka_producer as kafka_producer
+from integration.row_dict_maps.transfer_mapper import TransferMapper
 from config.config import Args
 import socket
 
@@ -52,18 +54,11 @@ def declare_logic():
     Rule.constraint(validate=models.Transfer, 
                 as_condition=lambda row: row.FromAccountID != row.ToAccountID,
                 error_msg="FromAccount {row.FromAccountID} must be different from ToAccount {row.ToAccountID}")
-            
-    
-    #Rule.commit_row_event(on_class=models.Account,calling=fn_overdraft)
-    
 
-    def fn_default_transfer(row=models.Transfer, old_row=models.Transfer, logic_row=LogicRow):
-        if logic_row.ins_upd_dlt == "ins" and row.TransactionDate is None:
-                row.TransactionDate = date.today()
-    
+
     def fn_transfer_funds(row=models.Transfer, old_row=models.Transfer, logic_row=LogicRow):
         """
-        Creates 2 TransactionLog rows (from/to account)
+        Creates 2 TransactionLog rows (from/to account), which adjust Customers' Account.AcctBalance
 
         Args:
             row (_type_, optional): _description_. Defaults to models.Transfer.
@@ -110,8 +105,7 @@ def declare_logic():
         from_trans.row.AccountID = fromAcctId
         from_trans.row.Withdrawl = amount
         from_trans.row.TransactionType = "Transfer From"
-        from_trans.row.TransactionDate = date.today()           # yank?
-        #session.add(from_trans)
+        # from_trans.row.TransactionDate = date.today()           # yank?
         from_trans.insert(reason="Transfer From")
         
         to_trans = logic_row.new_logic_row(models.TransactionLog)
@@ -119,30 +113,34 @@ def declare_logic():
         to_trans.row.AccountID = toAcctId
         to_trans.row.Deposit = amount
         to_trans.row.TransactionType = "Transfer To"
-        to_trans.row.TransactionDate = date.today()
-        #session.add(to_trans)
+        # to_trans.row.TransactionDate = date.today()
         to_trans.insert(reason="Transfer To")
-        
-        if producer:  # Val: consider kafka_producer.send_kafka_message (see nw)
-            try:
-                value = {
-                    "transactionID": row.TransactionID,
-                    "transactionDate": date.today(),
-                    "customerID": to_account.CustomerID,
-                    "fromAcct": fromAcctId,
-                    "toAcct": toAcctId,
-                    "amount": amount
-                }
-                producer.produce(value=value, topic="transfer_funds", key=row.TransactionID)
-            except KafkaException as ke:
-                logic_row.log("kafka_producer#kafka_message error: {ke}") 
         
         logic_row.log("Funds transferred successfully!")
 
+    def fn_send_kafka_message(row: models.Transfer, old_row: models.Transfer, logic_row: LogicRow):
+        """ #als: Send Kafka message formatted by TransferMapper RowDictMapper
+
+        Format row per requirements, and send (e.g., a message)
+
+        NB: the after_flush event makes autonum attrs available.
+
+        Args:
+            row (models.Order): inserted Order
+            old_row (models.Order): n/a
+            logic_row (LogicRow): bundles curr/old row, with ins/upd/dlt logic
+        """
+        if logic_row.is_inserted():
+            kafka_producer.send_kafka_message(logic_row=logic_row,
+                                              row_dict_mapper=TransferMapper,
+                                              kafka_topic="Transfer",
+                                              kafka_key=str(row.TransactionID),
+                                              msg="Sending Funds Transfer")
 
     Rule.commit_row_event(on_class=models.Transfer, calling=fn_transfer_funds)
 
-    
+    Rule.after_flush_row_event(on_class=models.Transfer, calling=fn_send_kafka_message)
+
     def handle_all(logic_row: LogicRow):  # OPTIMISTIC LOCKING, [TIME / DATE STAMPING]
         """
         This is generic - executed for all classes.
