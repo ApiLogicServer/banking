@@ -12,6 +12,8 @@ Changes
 
   Renamed Transaction -> TransactionLog (reserved word, evidently)
 
+  ApiLogicServer rebuild-from-database --project_name=. --db_url=sqlite:///database/db.sqlite
+
 Issues
   Running, though see database creation notes above
 
@@ -20,13 +22,11 @@ Simpifications to consider
     And, lots of warnings: "default ignored for ..."
       This is eager defaulting, in logic_row.insert()
       It means server_default provided, but unk data type (date[time], and NULL)
-    Note
-      On recent release, we are tolerate of null sums and counts
-      Support for date stamping for known attr names using generic events
-    So, we can 
-      Use naming convention for account, transaction, tranfer
-      Leaving transaction deposit and withdrawal
-        Which we could just set in transfer_funds
+    Addressed with update to eager defaulting in LogicBank
+      Handles CURRENT_TIMESTAMP for date, datetime
+      Ignores the infinitely curious 'default null'
+      log entry showing attrs skipped due to unhandled type, or excp
+
 
 
 Test

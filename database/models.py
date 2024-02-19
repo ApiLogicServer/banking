@@ -9,8 +9,8 @@ from sqlalchemy.ext.declarative import declarative_base
 # Alter this file per your database maintenance policy
 #    See https://apilogicserver.github.io/Docs/Project-Rebuild/#rebuilding
 #
-# Created:  February 17, 2024 17:20:45
-# Database: sqlite:////Users/val/dev/ApiLogicServer/ApiLogicServer-dev/org_git/banking/database/db.sqlite
+# Created:  February 18, 2024 15:52:42
+# Database: sqlite:////Users/val/Desktop/banking/database/db.sqlite
 # Dialect:  sqlite
 #
 # mypy: ignore-errors
@@ -72,7 +72,7 @@ class Branch(SAFRSBase, Base):
     Name = Column(String(100), server_default=text("NULL"))
     Office = Column(String(15), server_default=text("NULL"))
     Address = Column(String(100), server_default=text("NULL"))
-    OpenDate = Column(DateTime, server_default=text("NULL"))
+    OpenDate = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
     # parent relationships (access parent)
 
@@ -105,7 +105,7 @@ class Customer(SAFRSBase, Base):
     PhoneNumber = Column(String(20), server_default=text("NULL"))
     Address = Column(String(200), server_default=text("NULL"))
     BirthDate = Column(Date, server_default=text("NULL"))
-    RegistrationDate = Column(DateTime, server_default=text("NULL"))
+    RegistrationDate = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
     UserName = Column(String(64), nullable=False)
     Password = Column(String(64), nullable=False)
     BranchID = Column(ForeignKey('Branch.BranchID'), server_default=text("NULL"))
@@ -169,7 +169,7 @@ class Account(SAFRSBase, Base):
     CustomerID = Column(ForeignKey('Customer.CustomerID'), server_default=text("NULL"))
     AccountType = Column(ForeignKey('AccountType.Name'), server_default=text("NULL"))
     AcctBalance : DECIMAL = Column(DECIMAL(15, 2), server_default=text("NULL"))
-    OpenDate = Column(DateTime, server_default=text("NULL"))
+    OpenDate = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
     # parent relationships (access parent)
     AccountType1 : Mapped["AccountType"] = relationship(back_populates=("AccountList"))
@@ -205,7 +205,7 @@ class TransactionLog(SAFRSBase, Base):
     Deposit : DECIMAL = Column(DECIMAL(15, 2), server_default=text("NULL"))
     Withdrawl : DECIMAL = Column(DECIMAL(15, 2), server_default=text("NULL"))
     ItemImage = Column(Text)
-    TransactionDate = Column(DateTime, server_default=text("NULL"))
+    TransactionDate = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
     # parent relationships (access parent)
     Account : Mapped["Account"] = relationship(back_populates=("TransactionLogList"))
@@ -234,7 +234,7 @@ class Transfer(SAFRSBase, Base):
     FromAccountID = Column(ForeignKey('Account.AccountID'), server_default=text("NULL"))
     ToAccountID = Column(ForeignKey('Account.AccountID'), server_default=text("NULL"))
     Amount : DECIMAL = Column(DECIMAL(15, 2), server_default=text("NULL"))
-    TransactionDate = Column(DateTime, server_default=text("NULL"))
+    TransactionDate = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
     # parent relationships (access parent)
     Account : Mapped["Account"] = relationship(foreign_keys='[Transfer.FromAccountID]', back_populates=("TransferList"))

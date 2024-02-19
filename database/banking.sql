@@ -18,7 +18,7 @@ CREATE TABLE Branch (
   Name varchar(100) DEFAULT NULL,
   Office varchar(15) DEFAULT NULL,
   Address varchar(100) DEFAULT NULL,
-  OpenDate datetime DEFAULT NULL
+  OpenDate datetime DEFAULT CURRENT_TIMESTAMP
 ) ;
 
 INSERT INTO Branch VALUES (14,'Main','MainOffice','1 Main','2024-02-17 11:35:12'),(15,'Remote','RemoteOffice','Remoteville','2024-02-17 11:35:45');
@@ -33,7 +33,7 @@ CREATE TABLE Customer (
   PhoneNumber varchar(20) DEFAULT NULL,
   Address varchar(200) DEFAULT NULL,
   BirthDate date DEFAULT NULL,
-  RegistrationDate datetime DEFAULT NULL,
+  RegistrationDate datetime DEFAULT CURRENT_TIMESTAMP,
   UserName varchar(64) NOT NULL,
   Password varchar(64) NOT NULL,
   BranchID int DEFAULT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE Account (
   CustomerID int DEFAULT NULL,
   AccountType varchar(25) DEFAULT NULL,
   AcctBalance decimal(15,2) DEFAULT NULL,
-  OpenDate datetime DEFAULT NULL,
+  OpenDate datetime DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (AccountType) REFERENCES AccountType (Name),
   FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID)
 ) ;
@@ -81,7 +81,7 @@ CREATE TABLE TransactionLog (
   Deposit decimal(15,2) DEFAULT NULL,
   Withdrawl decimal(15,2) DEFAULT NULL,
   ItemImage text,
-  TransactionDate datetime DEFAULT NULL,
+  TransactionDate datetime DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (AccountID) REFERENCES Account (AccountID)
 ) ;
 
@@ -92,7 +92,7 @@ CREATE TABLE Transfer (
   FromAccountID int DEFAULT NULL,
   ToAccountID int DEFAULT NULL,
   Amount decimal(15,2) DEFAULT NULL,
-  TransactionDate datetime DEFAULT NULL,
+  TransactionDate datetime DEFAULT CURRENT_TIMESTAMP,
 
   FOREIGN KEY (FromAccountID) REFERENCES Account (AccountID),
   FOREIGN KEY (ToAccountID) REFERENCES Account (AccountID)
