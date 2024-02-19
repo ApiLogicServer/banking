@@ -58,7 +58,7 @@ def send_kafka_message(logic_row: LogicRow, row_dict_mapper: RowDictMapper,
         kafka_key (str): the kafka key
         msg (str, optional): string to log
     """
-    row_obj_dict = row_dict_mapper().row_to_dict(row = logic_row.row)
+    row_obj_dict = row_dict_mapper(logic_row=logic_row).row_to_dict(row = logic_row.row)
     json_string = jsonify({f'{logic_row.name}': row_obj_dict}).data.decode('utf-8')
     if producer:  # enabled in config/config.py?
         try:
