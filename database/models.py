@@ -166,9 +166,9 @@ class Account(SAFRSBase, Base):
     __bind_key__ = 'None'
 
     AccountID = Column(Integer, primary_key=True)
-    CustomerID = Column(ForeignKey('Customer.CustomerID'), server_default=text("NULL"))
-    AccountType = Column(ForeignKey('AccountType.Name'), server_default=text("NULL"))
-    AcctBalance : DECIMAL = Column(DECIMAL(15, 2), server_default=text("NULL"))
+    CustomerID = Column(ForeignKey('Customer.CustomerID'), server_default=text("0"))
+    AccountType = Column(ForeignKey('AccountType.Name'), server_default=text("0"))
+    AcctBalance : DECIMAL = Column(DECIMAL(15, 2), server_default=text("0"))
     OpenDate = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
     # parent relationships (access parent)
@@ -201,9 +201,9 @@ class TransactionLog(SAFRSBase, Base):
     TransactionID = Column(Integer, primary_key=True)
     AccountID = Column(ForeignKey('Account.AccountID'), server_default=text("NULL"))
     TransactionType = Column(String(25), server_default=text("NULL"))
-    TotalAmount : DECIMAL = Column(DECIMAL(15, 2), server_default=text("NULL"))
-    Deposit : DECIMAL = Column(DECIMAL(15, 2), server_default=text("NULL"))
-    Withdrawl : DECIMAL = Column(DECIMAL(15, 2), server_default=text("NULL"))
+    TotalAmount : DECIMAL = Column(DECIMAL(15, 2), server_default=text("0"))
+    Deposit : DECIMAL = Column(DECIMAL(15, 2), server_default=text("0"))
+    Withdrawl : DECIMAL = Column(DECIMAL(15, 2), server_default=text("0"))
     ItemImage = Column(Text)
     TransactionDate = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
@@ -233,7 +233,7 @@ class Transfer(SAFRSBase, Base):
     TransactionID = Column(Integer, primary_key=True)
     FromAccountID = Column(ForeignKey('Account.AccountID'), server_default=text("NULL"))
     ToAccountID = Column(ForeignKey('Account.AccountID'), server_default=text("NULL"))
-    Amount : DECIMAL = Column(DECIMAL(15, 2), server_default=text("NULL"))
+    Amount : DECIMAL = Column(DECIMAL(15, 2), server_default=text("0"))
     TransactionDate = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
     # parent relationships (access parent)
