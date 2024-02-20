@@ -14,6 +14,7 @@ from logic_bank.exec_row_logic.logic_row import LogicRow
 
 logger = logging.getLogger('integration.kafka')
 
+# version 1.1
 
 def json_to_entities(from_row: str | object, to_row):
     """

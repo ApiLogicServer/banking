@@ -1,5 +1,7 @@
 """
 
+Version 1.1
+
 Invoked at server start (api_logic_server_run.py)
 
 Connect to Kafka, if KAFKA_CONNECT specified in Config.py

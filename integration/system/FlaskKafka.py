@@ -7,6 +7,7 @@ from confluent_kafka import Producer, KafkaException, Consumer
 
 ####
 # adapted from and thanks to: https://pypi.org/project/flask-kafka
+# version 1.1
 ####
 
 logger = logging.getLogger('integration.kafka')
