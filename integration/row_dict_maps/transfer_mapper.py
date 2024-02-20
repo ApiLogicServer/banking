@@ -16,9 +16,9 @@ class TransferMapper(RowDictMapper):
     def __init__(self, logic_row: LogicRow = None):
         """ Format
 
-        Map Transfer tow into dict for sending as Kafka message
+        Map Transfer row into dict for sending as Kafka message
 
-        TODO: pass Customer.Name (a join field)
+        Note: declare Customer.FirstName (a join field)
 
         Returns:
             _type_: RowDictMapper object
@@ -33,6 +33,4 @@ class TransferMapper(RowDictMapper):
                         models.Transfer.TransactionDate, models.Transfer.Amount
                     ]
             )
-        
-
         return transfer
