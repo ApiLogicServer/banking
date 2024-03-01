@@ -62,3 +62,11 @@ You should see a console log like this:
 
 ![funds transfer](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/logic/funds-transfer.png?raw=true)
 
+&nbsp;
+
+# 3. Implementation
+
+The custom api (cURL target) is in [api/customize_api](api/customize_api.py).
+
+The logic is in [logic/declare_logic](logic/declare_logic.py).
+
