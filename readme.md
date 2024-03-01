@@ -16,19 +16,13 @@ To run the banking app...
 
 ## 1.1 Establish Your Python Environment - Other Environments
 
-Your `requirements.txt` has already been created, so...
-
-```bash title="Install API Logic Server in a Virtual Environment"
-python -m venv venv                        # may require python3 -m venv venv
-venv\Scripts\activate                      # mac/linux: source venv/bin/activate
-python -m pip install -r requirements.txt  # accept "new Virtual environment"
-```
+Establish your virtual environment, [like this](https://apilogicserver.github.io/Docs/Project-Env/).
 
 &nbsp;
 
 ## 1.2 Run
 
-The `ApiLogicServer create` command creates Run Configurations for PyCharm and VSCode:
+Then start the server (Run Configurations have already been created):
 
 * For PyCharm, press Ctl-D
 * For VSCode, &nbsp;press F5:
